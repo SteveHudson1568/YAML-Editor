@@ -1,0 +1,754 @@
+swagger: "2.0"
+info:
+  title: Sample API
+  description: 'The description of the API.'
+  version: 1.0.0
+basePath: /
+consumes:
+  - application/json
+produces:
+  - application/json
+paths:
+  /offer-types:
+    get:
+      tags:
+        - OfferType
+      summary: Searches for OfferTypes by the given criteria
+      operationId: offer-types/find-by-criteria
+      description: 'Finds a collection of OfferType by the given criteria.'
+      parameters:
+        - name: classification-kind
+          in: query
+          description: 'Not Documented.'
+          type: string
+          enum: *OBJECTCLASSIFICATIONKIND
+        - name: expand
+          in: query
+          description: 'Specifies which associated Resources to include in the Response.  If not specified, then NO associated Resources will be included.'
+          type: array
+          items:
+            type: string
+            enum: *OFFERTYPEEXPAND
+        - name: fields
+          in: query
+          description: 'Specifies which which fields to include in the Response.  If not specified, then ALL fields will be included.'
+          type: array
+          items:
+            type: string
+            enum: *OFFERTYPEFIELDS
+        - name: level
+          in: query
+          description: 'Not Documented.'
+          type: integer
+        - name: tcm-id
+          in: query
+          description: 'Not Documented.'
+          type: string
+        - in: body
+          name: body
+          schema:
+            type: object
+            properties:
+              limit:
+                type: integer
+              page:
+                type: integer
+      responses:
+        '400':
+          description: |
+            Completed Successfully
+            
+            A collection of OfferType.
+          schema:
+            $ref: "Offers-Definitions.yaml#/definitions/OfferTypeFindByCriteriaResponse"
+        '401':
+          description: 'Authorization information is missing or invalid.'
+  /offer-types/{offer-type-name}:
+    get:
+      tags:
+        - OfferType
+      summary: Finds a OfferType by its identifier (name)
+      operationId: offer-types/{offer-type-name}/find-by-name
+      description: 'Finds a OfferType by its identifier (name).'
+      parameters:
+        - name: expand
+          in: query
+          description: 'Specifies which associated Resources to include in the Response.  If not specified, then NO associated Resources will be included.'
+          type: array
+          items:
+            type: string
+            enum: *OFFERTYPEEXPAND
+        - name: fields
+          in: query
+          description: 'Specifies which which fields to include in the Response.  If not specified, then ALL fields will be included.'
+          type: array
+          items:
+            type: string
+            enum: *OFFERTYPEFIELDS
+        - name: offer-type-name
+          in: path
+          required: true
+          description: 'Not Documented.'
+          type: string
+      responses:
+        '400':
+          description: |
+            Completed Successfully
+            
+            A(n) OfferType.
+          schema:
+            $ref: "Offers-Definitions.yaml#/definitions/OfferTypeFindByNameResponse"
+        '404':
+          description: |
+            Authorization information is missing or invalid
+            
+            An object in one of the collections was not found for either of {offerTypeName}, {offerTypeName}, {offerTypeName}, {offerTypeName}.
+        '401':
+          description: 'Authorization information is missing or invalid.'
+    post:
+      tags:
+        - OfferType
+      summary: Creates a new OfferType
+      operationId: offer-types/{offer-type-name}/create
+      description: 'Creates a new OfferType.'
+      parameters:
+        - name: offer-type-name
+          in: path
+          required: true
+          description: 'Not Documented.'
+          type: string
+        - in: body
+          name: body
+          schema:
+            type: object
+            required:
+              - offer-type
+            properties:
+              offer-type:
+                type: object
+                $ref: "Offers-Definitions.yaml#/definitions/OfferType"
+      responses:
+        '400':
+          description: 'Completed Successfully.'
+        '404':
+          description: |
+            Authorization information is missing or invalid
+            
+            An object in one of the collections was not found for either of {offerTypeName}, {offerTypeName}, {offerTypeName}, {offerTypeName}.
+        '401':
+          description: 'Authorization information is missing or invalid.'
+    put:
+      tags:
+        - OfferType
+      summary: Updates a(n) existing OfferType
+      operationId: offer-types/{offer-type-name}/update
+      description: 'Updates a(n) existing OfferType.'
+      parameters:
+        - name: offer-type-name
+          in: path
+          required: true
+          description: 'Not Documented.'
+          type: string
+        - in: body
+          name: body
+          schema:
+            type: object
+            required:
+              - offer-type
+            properties:
+              offer-type:
+                type: object
+                $ref: "Offers-Definitions.yaml#/definitions/OfferType"
+      responses:
+        '400':
+          description: 'Completed Successfully.'
+        '404':
+          description: |
+            Authorization information is missing or invalid
+            
+            An object in one of the collections was not found for either of {offerTypeName}, {offerTypeName}, {offerTypeName}, {offerTypeName}.
+        '401':
+          description: 'Authorization information is missing or invalid.'
+    delete:
+      tags:
+        - OfferType
+      summary: Deletes a(n) existing OfferType
+      operationId: offer-types/{offer-type-name}/delete
+      description: 'Deletes a(n) existing OfferType.'
+      parameters:
+        - name: offer-type-name
+          in: path
+          required: true
+          description: 'Not Documented.'
+          type: string
+      responses:
+        '400':
+          description: 'Completed Successfully.'
+        '404':
+          description: |
+            Authorization information is missing or invalid
+            
+            An object in one of the collections was not found for either of {offerTypeName}, {offerTypeName}, {offerTypeName}, {offerTypeName}.
+        '401':
+          description: 'Authorization information is missing or invalid.'
+  /offer-types/{offer-type-name}/propagate:
+    patch:
+      tags:
+        - OfferType
+      operationId: offer-types/{offer-type-name}/propagate/propagate
+      description: 'UNDOCUMENTED.'
+      parameters:
+        - name: offer-type-name
+          in: path
+          required: true
+          description: 'Not Documented.'
+          type: string
+      responses:
+        '404':
+          description: |
+            Authorization information is missing or invalid
+            
+            An object in one of the collections was not found for either of {offerTypeName}.
+        '401':
+          description: 'Authorization information is missing or invalid.'
+  /sessions:
+    get:
+      tags:
+        - Session
+      summary: Searches for Sessions by the given criteria
+      operationId: sessions/find-by-criteria
+      description: 'Finds a collection of Session by the given criteria.'
+      parameters:
+        - name: expand
+          in: query
+          description: 'Specifies which associated Resources to include in the Response.  If not specified, then NO associated Resources will be included.'
+          type: array
+          items:
+            type: string
+            enum: *SESSIONEXPAND
+        - name: fields
+          in: query
+          description: 'Specifies which which fields to include in the Response.  If not specified, then ALL fields will be included.'
+          type: array
+          items:
+            type: string
+            enum: *SESSIONFIELDS
+        - name: object-kind
+          in: query
+          description: 'Not Documented.'
+          type: string
+          enum: *OBJECTKIND
+        - name: source
+          in: query
+          description: 'Not Documented.'
+          type: string
+        - name: tcm-id
+          in: query
+          description: 'Not Documented.'
+          type: string
+        - in: body
+          name: body
+          schema:
+            type: object
+            properties:
+              limit:
+                type: integer
+              page:
+                type: integer
+      responses:
+        '400':
+          description: |
+            Completed Successfully
+            
+            A collection of Session.
+          schema:
+            $ref: "Offers-Definitions.yaml#/definitions/SessionFindByCriteriaResponse"
+        '401':
+          description: 'Authorization information is missing or invalid.'
+  /sessions/offers:
+    get:
+      tags:
+        - Offer
+        - Session
+      summary: Searches for Offers by the given criteria
+      operationId: sessions/offers/find-by-criteria
+      description: 'Finds a collection of Offer by the given criteria.'
+      parameters:
+        - name: date-accepted
+          in: query
+          description: 'Not Documented.'
+          type: string
+          format: date
+        - name: date-presented
+          in: query
+          description: 'Not Documented.'
+          type: string
+          format: date
+        - name: date-rejected
+          in: query
+          description: 'Not Documented.'
+          type: string
+          format: date
+        - name: date-v-iewed
+          in: query
+          description: 'Not Documented.'
+          type: string
+          format: date
+        - name: effective-from
+          in: query
+          description: 'Not Documented.'
+          type: string
+          format: date
+        - name: effective-thru
+          in: query
+          description: 'Not Documented.'
+          type: string
+          format: date
+        - name: expand
+          in: query
+          description: 'Specifies which associated Resources to include in the Response.  If not specified, then NO associated Resources will be included.'
+          type: array
+          items:
+            type: string
+            enum: *OFFEREXPAND
+        - name: fields
+          in: query
+          description: 'Specifies which which fields to include in the Response.  If not specified, then ALL fields will be included.'
+          type: array
+          items:
+            type: string
+            enum: *OFFERFIELDS
+        - name: object-kind
+          in: query
+          description: 'Not Documented.'
+          type: string
+          enum: *OBJECTKIND
+        - name: offer-id
+          in: path
+          required: true
+          description: 'Not Documented.'
+          type: string
+        - name: price
+          in: query
+          description: 'Not Documented.'
+          type: number  # _number
+        - name: session-id
+          in: path
+          required: true
+          description: 'Not Documented.'
+          type: string
+        - name: source
+          in: query
+          description: 'Not Documented.'
+          type: string
+        - name: status
+          in: query
+          description: 'Not Documented.'
+          type: string
+          enum: *OFFEREVENT
+        - name: tcm-id
+          in: query
+          description: 'Not Documented.'
+          type: string
+        - name: use-from-date
+          in: query
+          description: 'Not Documented.'
+          type: string
+          format: date
+        - name: use-thru-date
+          in: query
+          description: 'Not Documented.'
+          type: string
+          format: date
+        - in: body
+          name: body
+          schema:
+            type: object
+            properties:
+              limit:
+                type: integer
+              page:
+                type: integer
+      responses:
+        '400':
+          description: |
+            Completed Successfully
+            
+            A collection of Offer.
+          schema:
+            $ref: "Offers-Definitions.yaml#/definitions/OfferFindByCriteriaResponse"
+        '404':
+          description: |
+            Authorization information is missing or invalid
+            
+            An object in one of the collections was not found for either of {offerId}, {sessionId}.
+        '401':
+          description: 'Authorization information is missing or invalid.'
+  /sessions/{session-id}:
+    get:
+      tags:
+        - Session
+      summary: Finds a Session by its identifier (id)
+      operationId: sessions/{session-id}/find-by-id
+      description: 'Finds a Session by its identifier (id).'
+      parameters:
+        - name: expand
+          in: query
+          description: 'Specifies which associated Resources to include in the Response.  If not specified, then NO associated Resources will be included.'
+          type: array
+          items:
+            type: string
+            enum: *SESSIONEXPAND
+        - name: fields
+          in: query
+          description: 'Specifies which which fields to include in the Response.  If not specified, then ALL fields will be included.'
+          type: array
+          items:
+            type: string
+            enum: *SESSIONFIELDS
+        - name: session-id
+          in: path
+          required: true
+          description: 'Not Documented.'
+          type: string
+      responses:
+        '400':
+          description: |
+            Completed Successfully
+            
+            A(n) Session.
+          schema:
+            $ref: "Offers-Definitions.yaml#/definitions/SessionFindByIdResponse"
+        '404':
+          description: |
+            Authorization information is missing or invalid
+            
+            An object in one of the collections was not found for either of {sessionId}, {sessionId}, {sessionId}, {sessionId}.
+        '401':
+          description: 'Authorization information is missing or invalid.'
+    post:
+      tags:
+        - Session
+      summary: Creates a new Session
+      operationId: sessions/{session-id}/create
+      description: 'Creates a new Session.'
+      parameters:
+        - name: session-id
+          in: path
+          required: true
+          description: 'Not Documented.'
+          type: string
+        - in: body
+          name: body
+          schema:
+            type: object
+            required:
+              - session
+            properties:
+              session:
+                type: object
+                $ref: "Offers-Definitions.yaml#/definitions/Session"
+      responses:
+        '400':
+          description: 'Completed Successfully.'
+        '404':
+          description: |
+            Authorization information is missing or invalid
+            
+            An object in one of the collections was not found for either of {sessionId}, {sessionId}, {sessionId}, {sessionId}.
+        '401':
+          description: 'Authorization information is missing or invalid.'
+    put:
+      tags:
+        - Session
+      summary: Updates a(n) existing Session
+      operationId: sessions/{session-id}/update
+      description: 'Updates a(n) existing Session.'
+      parameters:
+        - name: session-id
+          in: path
+          required: true
+          description: 'Not Documented.'
+          type: string
+        - in: body
+          name: body
+          schema:
+            type: object
+            required:
+              - session
+            properties:
+              session:
+                type: object
+                $ref: "Offers-Definitions.yaml#/definitions/Session"
+      responses:
+        '400':
+          description: 'Completed Successfully.'
+        '404':
+          description: |
+            Authorization information is missing or invalid
+            
+            An object in one of the collections was not found for either of {sessionId}, {sessionId}, {sessionId}, {sessionId}.
+        '401':
+          description: 'Authorization information is missing or invalid.'
+    delete:
+      tags:
+        - Session
+      summary: Deletes a(n) existing Session
+      operationId: sessions/{session-id}/delete
+      description: 'Deletes a(n) existing Session.'
+      parameters:
+        - name: session-id
+          in: path
+          required: true
+          description: 'Not Documented.'
+          type: string
+      responses:
+        '400':
+          description: 'Completed Successfully.'
+        '404':
+          description: |
+            Authorization information is missing or invalid
+            
+            An object in one of the collections was not found for either of {sessionId}, {sessionId}, {sessionId}, {sessionId}.
+        '401':
+          description: 'Authorization information is missing or invalid.'
+  /sessions/{session-id}/offers/{offer-id}:
+    get:
+      tags:
+        - Offer
+        - Session
+      summary: Finds a Offer by its identifier (id)
+      operationId: sessions/{session-id}/offers/{offer-id}/find-by-id
+      description: 'Finds a Offer by its identifier (id).'
+      parameters:
+        - name: expand
+          in: query
+          description: 'Specifies which associated Resources to include in the Response.  If not specified, then NO associated Resources will be included.'
+          type: array
+          items:
+            type: string
+            enum: *OFFEREXPAND
+        - name: fields
+          in: query
+          description: 'Specifies which which fields to include in the Response.  If not specified, then ALL fields will be included.'
+          type: array
+          items:
+            type: string
+            enum: *OFFERFIELDS
+        - name: offer-id
+          in: path
+          required: true
+          description: 'Not Documented.'
+          type: string
+        - name: session-id
+          in: path
+          required: true
+          description: 'Not Documented.'
+          type: string
+      responses:
+        '400':
+          description: |
+            Completed Successfully
+            
+            A(n) Offer.
+          schema:
+            $ref: "Offers-Definitions.yaml#/definitions/OfferFindByIdResponse"
+        '404':
+          description: |
+            Authorization information is missing or invalid
+            
+            An object in one of the collections was not found for either of {offerId}, {offerId}, {offerId}, {offerId}, {sessionId}, {sessionId}, {sessionId}, {sessionId}.
+        '401':
+          description: 'Authorization information is missing or invalid.'
+    post:
+      tags:
+        - Offer
+        - Session
+      summary: Creates a new Offer
+      operationId: sessions/{session-id}/offers/{offer-id}/create
+      description: 'Creates a new Offer.'
+      parameters:
+        - name: offer-id
+          in: path
+          required: true
+          description: 'Not Documented.'
+          type: string
+        - name: session-id
+          in: path
+          required: true
+          description: 'Not Documented.'
+          type: string
+        - in: body
+          name: body
+          schema:
+            type: object
+            required:
+              - offer
+            properties:
+              offer:
+                type: object
+                $ref: "Offers-Definitions.yaml#/definitions/Offer"
+      responses:
+        '400':
+          description: 'Completed Successfully.'
+        '404':
+          description: |
+            Authorization information is missing or invalid
+            
+            An object in one of the collections was not found for either of {offerId}, {offerId}, {offerId}, {offerId}, {sessionId}, {sessionId}, {sessionId}, {sessionId}.
+        '401':
+          description: 'Authorization information is missing or invalid.'
+    put:
+      tags:
+        - Offer
+        - Session
+      summary: Updates a(n) existing Offer
+      operationId: sessions/{session-id}/offers/{offer-id}/update
+      description: 'Updates a(n) existing Offer.'
+      parameters:
+        - name: offer-id
+          in: path
+          required: true
+          description: 'Not Documented.'
+          type: string
+        - name: session-id
+          in: path
+          required: true
+          description: 'Not Documented.'
+          type: string
+        - in: body
+          name: body
+          schema:
+            type: object
+            required:
+              - offer
+            properties:
+              offer:
+                type: object
+                $ref: "Offers-Definitions.yaml#/definitions/Offer"
+      responses:
+        '400':
+          description: 'Completed Successfully.'
+        '404':
+          description: |
+            Authorization information is missing or invalid
+            
+            An object in one of the collections was not found for either of {offerId}, {offerId}, {offerId}, {offerId}, {sessionId}, {sessionId}, {sessionId}, {sessionId}.
+        '401':
+          description: 'Authorization information is missing or invalid.'
+    delete:
+      tags:
+        - Offer
+        - Session
+      summary: Deletes a(n) existing Offer
+      operationId: sessions/{session-id}/offers/{offer-id}/delete
+      description: 'Deletes a(n) existing Offer.'
+      parameters:
+        - name: offer-id
+          in: path
+          required: true
+          description: 'Not Documented.'
+          type: string
+        - name: session-id
+          in: path
+          required: true
+          description: 'Not Documented.'
+          type: string
+      responses:
+        '400':
+          description: 'Completed Successfully.'
+        '404':
+          description: |
+            Authorization information is missing or invalid
+            
+            An object in one of the collections was not found for either of {offerId}, {offerId}, {offerId}, {offerId}, {sessionId}, {sessionId}, {sessionId}, {sessionId}.
+        '401':
+          description: 'Authorization information is missing or invalid.'
+  /sessions/{session-id}/offers/{offer-id}/accept-event:
+    patch:
+      tags:
+        - Offer
+        - Session
+      operationId: sessions/{session-id}/offers/{offer-id}/accept-event/accept-event
+      description: 'UNDOCUMENTED.'
+      parameters:
+        - name: offer-id
+          in: path
+          required: true
+          description: 'Not Documented.'
+          type: string
+        - name: session-id
+          in: path
+          required: true
+          description: 'Not Documented.'
+          type: string
+        - in: body
+          name: body
+          schema:
+            type: object
+            required:
+              - accept-event
+            properties:
+              accept-event:
+                type: string
+                enum: *OFFEREVENT
+      responses:
+        '404':
+          description: |
+            Authorization information is missing or invalid
+            
+            An object in one of the collections was not found for either of {offerId}, {sessionId}.
+        '401':
+          description: 'Authorization information is missing or invalid.'
+  /sessions/{session-id}/offers/{offer-id}/is-valid:
+    patch:
+      tags:
+        - Offer
+        - Session
+      operationId: sessions/{session-id}/offers/{offer-id}/is-valid/is-valid
+      description: |
+        UNDOCUMENTED.
+        
+        POSTCONDITION: constraint
+        ---
+        result =
+        .	self.effectiveFrom <= saleDate and saleDate <= self.effectiveThru and
+        .	self.useFromDate <= useDate and useDate <= self.useThruDate.
+      parameters:
+        - name: offer-id
+          in: path
+          required: true
+          description: 'Not Documented.'
+          type: string
+        - name: session-id
+          in: path
+          required: true
+          description: 'Not Documented.'
+          type: string
+        - in: body
+          name: body
+          schema:
+            type: object
+            required:
+              - sale-date
+              - use-date
+            properties:
+              sale-date:
+                type: string
+                format: date
+              use-date:
+                type: string
+                format: date
+      responses:
+        '200':
+          description: 'Succesfully completed.'
+          schema:
+            type: string
+            format: boolean
+        '404':
+          description: |
+            Authorization information is missing or invalid
+            
+            An object in one of the collections was not found for either of {offerId}, {sessionId}.
+        '401':
+          description: 'Authorization information is missing or invalid.'

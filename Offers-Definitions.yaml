@@ -1,0 +1,413 @@
+definitions:
+  ObjectClassificationKind: # NOTE: This is 'never used in document' because YAML2.0 doesn't support shared enumerations.
+    description: Defines an alias for shared enumerations as a trick to work around the YAML2.0 limitation.
+    type: string
+    enum: &OBJECTCLASSIFICATIONKIND
+      - Type
+      - Category
+  ObjectKind: # NOTE: This is 'never used in document' because YAML2.0 doesn't support shared enumerations.
+    description: Defines an alias for shared enumerations as a trick to work around the YAML2.0 limitation.
+    type: string
+    enum: &OBJECTKIND
+      - Single
+      - Set
+  OfferEvent: # NOTE: This is 'never used in document' because YAML2.0 doesn't support shared enumerations.
+    description: Defines an alias for shared enumerations as a trick to work around the YAML2.0 limitation.
+    type: string
+    enum: &OFFEREVENT
+      - Presented
+      - Viewed
+      - Accepted
+      - Rejected
+  OfferExpand: # NOTE: This is 'never used in document' because YAML2.0 doesn't support shared enumerations.
+    description: Defines an alias for shared enumerations as a trick to work around the YAML2.0 limitation.
+    type: string
+    enum: &OFFEREXPAND
+      - categorizations
+      - category
+      - guest
+      - product
+      - session
+      - type
+      - typeOfOffer
+  OfferFields: # NOTE: This is 'never used in document' because YAML2.0 doesn't support shared enumerations.
+    description: Defines an alias for shared enumerations as a trick to work around the YAML2.0 limitation.
+    type: string
+    enum: &OFFERFIELDS
+      - dateAccepted
+      - datePresented
+      - dateRejected
+      - dateVIewed
+      - effectiveFrom
+      - effectiveThru
+      - id
+      - objectKind
+      - price
+      - source
+      - status
+      - tcmId
+      - tracking
+      - useFromDate
+      - useThruDate
+  OfferTypeExpand: # NOTE: This is 'never used in document' because YAML2.0 doesn't support shared enumerations.
+    description: Defines an alias for shared enumerations as a trick to work around the YAML2.0 limitation.
+    type: string
+    enum: &OFFERTYPEEXPAND
+      - definedBy
+      - definedCategories
+      - description
+      - hyper
+      - product
+  OfferTypeFields: # NOTE: This is 'never used in document' because YAML2.0 doesn't support shared enumerations.
+    description: Defines an alias for shared enumerations as a trick to work around the YAML2.0 limitation.
+    type: string
+    enum: &OFFERTYPEFIELDS
+      - classificationKind
+      - level
+      - name
+      - tcmId
+      - tracking
+  SessionExpand: # NOTE: This is 'never used in document' because YAML2.0 doesn't support shared enumerations.
+    description: Defines an alias for shared enumerations as a trick to work around the YAML2.0 limitation.
+    type: string
+    enum: &SESSIONEXPAND
+      - categorizations
+      - category
+      - offers
+      - type
+  SessionFields: # NOTE: This is 'never used in document' because YAML2.0 doesn't support shared enumerations.
+    description: Defines an alias for shared enumerations as a trick to work around the YAML2.0 limitation.
+    type: string
+    enum: &SESSIONFIELDS
+      - id
+      - objectKind
+      - source
+      - tcmId
+      - tracking
+  Element:
+    type: object
+    required:
+      - tcm-id
+      - tracking
+    properties:
+      tcm-id:
+        description: 'The tridion conent identifier.'
+        type: string
+      tracking:
+        description: 'UNDOCUMENTED.'
+        $ref: "#/definitions/Tracking"
+  Object:
+    allOf:
+      - $ref: "#/definitions/Element"
+      - type: object
+        required:
+          - object-kind
+          - type-name
+        properties:
+          categorizations:
+            description: 'The categorizations this Object is involved in.'
+            type: array
+            items:
+              $ref: "#/definitions/ObjectCategorization"
+              readOnly: true
+          category-name:
+            description: |
+              The single category this Object has been given.  This is used only when there is a single categorization scheme for the Object.
+              'Category" refers to grouping the Object based on the values of its intrinsice fields defined by its 'Type'.
+              
+              RULE: Category must be a kind of CATEGORY
+              ---
+              self.category.classificationKind = ObjectClassificationKind::Category.
+            type: string
+          id:
+            description: 'Uniquely identifies the Object.A value that uniquely identifies an Object.'
+            type: string
+            readOnly: true
+          object-kind:
+            description: 'The kind of Object this is.'
+            type: string
+            enum: *OBJECTKIND
+            default: "Single"
+          source:
+            description: 'UNDOCUMENTED.'
+            type: string
+          type-name:
+            description: |
+              The type of Object this is.  'Type" refers to the intrinsic nature of the Object (i.e., its structural fields and encapsulating behavior).
+              
+              RULE: Type must be a kind of TYPE
+              ---
+              self.type.classificationKind = ObjectClassificationKind::Type.
+            type: string
+    discriminator: type-name
+    example:
+      price: $25.00
+  ObjectCategorization:
+    type: object
+    required:
+      - category-name
+    properties:
+      category-name:
+        description: |
+          UNDOCUMENTED.
+          
+          RULE: Category must be a kind of CATEGORY
+          ---
+          self.category.classificationKind = ObjectClassificationKind::Category.
+        type: string
+  ObjectClassification:
+    allOf:
+      - $ref: "#/definitions/Element"
+      - type: object
+        required:
+          - classification-kind
+          - description
+          - name
+        properties:
+          classification-kind:
+            description: 'UNDOCUMENTED.'
+            type: string
+            enum: *OBJECTCLASSIFICATIONKIND
+          defined-by-name:
+            description: 'UNDOCUMENTED.'
+            type: string
+          defined-categories-name:
+            description: |
+              UNDOCUMENTED.
+              
+              RULE: definedCategories
+              ---
+              self.definedCategories =
+              .	ObjectClassification.allInstances()->
+              .		select( class | class.definedBy = self ).
+            type: array
+            items:
+              type: string
+          description:
+            description: 'UNDOCUMENTED.'
+            $ref: "#/definitions/ObjectDescription"
+          hyper-name:
+            description: 'UNDOCUMENTED.'
+            type: string
+          level:
+            description: |
+              UNDOCUMENTED.
+              
+              RULE: level = self.hyper.level + 1
+              ---
+              if self.hyper = null
+              .   then self.level = 1
+              .   else  self.level = self.hyper.level + 1
+              endif.
+            type: integer
+            readOnly: true
+          name:
+            description: 'UNDOCUMENTED.A value that uniquely identifies an Object.'
+            type: string
+  ObjectDescription:
+    type: object
+    required:
+      - short-description
+    properties:
+      long-description:
+        description: 'Verbosely describes the Object.'
+        type: string
+      short-description:
+        description: 'Tersely describes the Object.'
+        type: string
+  Offer:
+    description: 'An Product presented to a specific Guest.'
+    allOf:
+      - $ref: "#/definitions/Object"
+      - type: object
+        required:
+          - guest-id
+          - price
+          - session-id
+          - status
+        properties:
+          date-accepted:
+            description: 'UNDOCUMENTED.'
+            type: string
+            format: date
+          date-presented:
+            description: 'UNDOCUMENTED.'
+            type: string
+            format: date
+          date-rejected:
+            description: 'UNDOCUMENTED.'
+            type: string
+            format: date
+          date-v-iewed:
+            description: 'UNDOCUMENTED.'
+            type: string
+            format: date
+          effective-from:
+            description: 'UNDOCUMENTED.'
+            type: string
+            format: date
+          effective-thru:
+            description: 'UNDOCUMENTED.'
+            type: string
+            format: date
+          guest-id:
+            description: 'The Guest the Offer was prestented to.'
+            type: string
+          price:
+            description: 'UNDOCUMENTED.'
+            example: "$25.00"
+            type: number  # _number
+          product-name:
+            description: |
+              The Product (Model or SKU) that was prestend to the Guest.
+              
+              RULE: product is from type
+              ---
+              self.product = self.typeOfOffer.product.
+            type: string
+          session-id:
+            description: 'UNDOCUMENTED.'
+            type: string
+          status:
+            description: 'UNDOCUMENTED.'
+            type: string
+            enum: *OFFEREVENT
+          type-of-offer-name:
+            description: |
+              The type of Offer this is.  'Type" refers to the intrinsic nature of the Offer (i.e., its structural fields and encapsulating behavior).
+              
+              SUBSETS: typeName.
+            type: string
+          use-from-date:
+            description: 'UNDOCUMENTED.'
+            type: string
+            format: date
+          use-thru-date:
+            description: 'UNDOCUMENTED.'
+            type: string
+            format: date
+    example:
+      price: $25.00
+  OfferFindByCriteriaResponse:
+    description: 'The response for findByCriteria.'
+    type: object
+    required:
+      - offer
+    properties:
+      categorizations:
+        description: 'Not Documented.'
+        type: array
+        items:
+          $ref: "#/definitions/ObjectCategorization"
+      offer:
+        description: 'Not Documented.'
+        $ref: "#/definitions/Offer"
+  OfferFindByIdResponse:
+    description: 'The response for findById.'
+    type: object
+    required:
+      - offer
+    properties:
+      categorizations:
+        description: 'Not Documented.'
+        type: array
+        items:
+          $ref: "#/definitions/ObjectCategorization"
+      offer:
+        description: 'Not Documented.'
+        $ref: "#/definitions/Offer"
+  OfferType:
+    allOf:
+      - $ref: "#/definitions/ObjectClassification"
+      - type: object
+        required:
+          - product-name
+        properties:
+          product-name:
+            description: 'UNDOCUMENTED.'
+            type: string
+  OfferTypeFindByCriteriaResponse:
+    description: 'The response for findByCriteria.'
+    type: object
+    required:
+      - offer-type
+    properties:
+      defined-by:
+        description: 'Not Documented.'
+        $ref: "#/definitions/ObjectClassification"
+      offer-type:
+        description: 'Not Documented.'
+        $ref: "#/definitions/OfferType"
+  OfferTypeFindByNameResponse:
+    description: 'The response for findByName.'
+    type: object
+    required:
+      - offer-type
+    properties:
+      defined-by:
+        description: 'Not Documented.'
+        $ref: "#/definitions/ObjectClassification"
+      offer-type:
+        description: 'Not Documented.'
+        $ref: "#/definitions/OfferType"
+  Session:
+    description: 'The active interactions from the L8.'
+    allOf:
+      - $ref: "#/definitions/Object"
+      - type: object
+        properties:
+          offers:
+            description: 'UNDOCUMENTED.'
+            type: array
+            items:
+              $ref: "#/definitions/Offer"
+              readOnly: true
+  SessionFindByCriteriaResponse:
+    description: 'The response for findByCriteria.'
+    type: object
+    required:
+      - session
+    properties:
+      categorizations:
+        description: 'Not Documented.'
+        type: array
+        items:
+          $ref: "#/definitions/ObjectCategorization"
+      session:
+        description: 'Not Documented.'
+        $ref: "#/definitions/Session"
+  SessionFindByIdResponse:
+    description: 'The response for findById.'
+    type: object
+    required:
+      - session
+    properties:
+      categorizations:
+        description: 'Not Documented.'
+        type: array
+        items:
+          $ref: "#/definitions/ObjectCategorization"
+      session:
+        description: 'Not Documented.'
+        $ref: "#/definitions/Session"
+  Tracking:
+    type: object
+    required:
+      - created-date-time
+      - last-updated-date-time
+    properties:
+      created-by:
+        description: 'Who originally created the object.'
+        type: string
+      created-date-time:
+        description: 'The date and time the object was created.'
+        type: string
+        format: date-time
+      last-updated-by:
+        description: 'Who last updated the object.'
+        type: string
+        format: date
+      last-updated-date-time:
+        description: 'The date and time the object was last updated.'
+        type: string
+        format: date-time
